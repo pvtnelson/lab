@@ -1,0 +1,76 @@
+# This is the steps I did to install rancher desktop.
+# This is done for the Kubecraft course to learn kubernetes. This is the very basics and we are just starting. 
+# Followed documentation on https://docs.rancherdesktop.io/getting-started/installation
+
+#1 check if you have access to /dev/kvm
+[ -r /dev/kvm ] && [ -w /dev/kvm ] || echo 'insufficient privileges'
+
+#2 install via rpm-ostree since on fedora kinoite. 
+sudo rm /etc/yum.repos.d/isv-Rancher-stable.repo
+
+sudo curl -o /etc/yum.repos.d/isv-Rancher-stable.repo  https://download.opensuse.org/repositories/isv:/Rancher:/stable/fedora/isv:Rancher:stable.repo
+
+head -n 3 /etc/yum.repos.d/isv-Rancher-stable.repo
+
+sudo rpm-ostree install rancher-desktop
+systemctl reboot
+
+#3 Install kubectl
+mkdir -p ~/.local/bin
+curl -L "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+  -o ~/.local/bin/kubectl
+chmod +x ~/.local/bin/kubectl
+kubectl version --client
+
+# 4 install k9s
+mkdir -p ~/.local/bin
+curl -L https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_amd64.tar.gz \
+  | tar -xz -C ~/.local/bin k9s
+chmod +x ~/.local/bin/k9s
+k9s version
+
+# 5 Install vim in a toolbox since on a an immutable OS (Fedora Kinoite)
+toolbox create
+toolbox enter
+sudo dnf install vim-enhanced
+
+# 6 Started Rancher desktop via GUI and connected automatically 
+kubectl get pods -A
+
+# 7 check kube config
+vi ~/.kube/config 
+
+#8 Confirm K9s is working
+k9s 
+0 #shows all pods
+:q # exit just like vim
+
+#9 basic .vimrc for YAML editing
+vi ~/.vimrc
+" Ensure Vim uses filetype plugins
+filetype plugin on
+
+" Enable indentation
+filetype indent on
+
+" Set the default indentation to 2 spaces for all files
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+
+" Highlight trailing whitespace in all files
+autocmd BufRead,BufNewFile * match Error /\s\+$/
+
+" Enable auto-indentation
+set autoindent
+
+" Turn on syntax highlighting
+syntax on
+
+" Set backspace so it acts more intuitively
+set backspace=indent,eol,start
+
+
+End of the basic setup. Can start with the lab now.
+ 
