@@ -7,7 +7,8 @@ RUN mkdir -p /app/data
 WORKDIR /app
 
 COPY greet .
+COPY date .
 
-CMD ["./greet"]
+CMD ["./date"]
 
 
