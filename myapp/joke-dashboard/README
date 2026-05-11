@@ -1,0 +1,13 @@
+6.7 How It Works
+
+Docker Compose creates a network - both containers can talk to each other by service name
+
+Creates a shared volume - html volume mounted in both containers
+
+Starts updater - fetches joke, writes HTML to volume
+
+Starts nginx - serves HTML from the same volume
+
+Every 30 seconds - updater fetches new joke, overwrites HTML
+
+Browser refresh - shows new joke
